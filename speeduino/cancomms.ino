@@ -34,8 +34,9 @@ bool canCmdPending = false;
 #if ( defined(__AVR_ATmega1280__) || defined(__AVR_ATmega2560__) )
   HardwareSerial &CANSerial = Serial3;
 #elif defined(CORE_STM32)
-  #ifndef HAVE_HWSERIAL2 //Hack to get the code to compile on BlackPills
-    #define Serial2 Serial1
+  #define CANSerial_AVAILABLE
+  #ifndef Serial2
+    #define Serial2 Serial3
   #endif
   #if defined(STM32GENERIC) // STM32GENERIC core
     SerialUART &CANSerial = Serial2;
