@@ -624,6 +624,7 @@ void doUpdates(void)
     //CAN broadcast introduced
     configPage2.canBMWCluster = 0;
     configPage2.canVAGCluster = 0;
+    configPage2.canHALCluster = 0;
     
     configPage15.boostDCWhenDisabled = 0;
     configPage15.boostControlEnable = EN_BOOST_CONTROL_BARO;
