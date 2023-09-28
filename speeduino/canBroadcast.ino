@@ -30,6 +30,39 @@ void sendVAGCluster()
   DashMessage(CAN_VAG_VSS);
   Can0.write(outMsg);
 }
+void sendHALCluster()
+{
+  DashMessage(CAN_HAL_RPM);
+  Can0.write(outMsg);
+  DashMessage(CAN_HAL_VSS);
+  Can0.write(outMsg);
+  DashMessage(CAN_HAL_TMP);
+  Can0.write(outMsg);
+  DashMessage(CAN_HAL_BAT);
+  Can0.write(outMsg);
+  DashMessage(CAN_HAL_AFR);
+  Can0.write(outMsg);
+  DashMessage(CAN_HAL_ADV);
+  Can0.write(outMsg);
+  DashMessage(CAN_HAL_PRS);
+  Can0.write(outMsg);
+  if(currentStatus.RPM >= 400){
+      outMsg.id = 250937344;
+      outMsg.flags.extended = 1;  // To enable extended ID.
+      outMsg.len = 2;
+      outMsg.buf[0] = 0x00;
+      outMsg.buf[1] = 0x01;
+  Can0.write(outMsg);
+ }
+ else{
+      outMsg.id = 250937344;
+      outMsg.flags.extended = 1;  // To enable extended ID.
+      outMsg.len = 2;
+      outMsg.buf[0] = 0x00;
+      outMsg.buf[1] = 0x00;
+  Can0.write(outMsg);
+ }
+}
 
 // switch case for gathering all data to message based on CAN Id.
 void DashMessage(uint16_t DashMessageID)
@@ -113,7 +146,105 @@ void DashMessage(uint16_t DashMessageID)
       outMsg.buf[6] = 0x00;
       outMsg.buf[7] = 0xAD;
     break;
+    
+    case 0x360:       //RPM, MAP, TPS
+    temp_TPS = currentStatus.TPS;
+      outMsg.id = DashMessageID;
+      outMsg.len = 8;
+      outMsg.buf[0] = highByte(currentStatus.RPM);
+      outMsg.buf[1] = lowByte(currentStatus.RPM);
+      outMsg.buf[2] = highByte(currentStatus.MAP*10);
+      outMsg.buf[3] = lowByte(currentStatus.MAP*10);
+      outMsg.buf[4] = (currentStatus.TPS/25.6)/2;
+      outMsg.buf[5] = (currentStatus.TPS*10)/2;
+      outMsg.buf[6] = 0x00;
+      outMsg.buf[7] = 0x00;
+    break;
 
+    case 0x3E0:       //Coolant and Air Temp
+      uint8_t temp_IAT;
+      temp_IAT = (byte)(currentStatus.IAT) ;
+      temp_CLT = (byte)(currentStatus.coolant);            
+      outMsg.id = DashMessageID;
+      outMsg.len = 8;
+      outMsg.buf[0] = temp_CLT;
+      outMsg.buf[1] = temp_CLT;
+      outMsg.buf[2] = temp_IAT;
+      outMsg.buf[3] = temp_IAT;
+      outMsg.buf[4] = 0x00;
+      outMsg.buf[5] = 0x00;
+      outMsg.buf[6] = 0x00;
+      outMsg.buf[7] = 0x00;
+    break;    
+
+    case 0x372:       //Battery 
+    uint8_t temp_BAT;
+    temp_BAT = currentStatus.battery10;
+      outMsg.id = DashMessageID;
+      outMsg.len = 8;
+      outMsg.buf[0] = 0x00;
+      outMsg.buf[1] = temp_BAT;
+      outMsg.buf[2] = 0x00;
+      outMsg.buf[3] = 0x00;
+      outMsg.buf[4] = 0x00;
+      outMsg.buf[5] = 0x00;
+      outMsg.buf[6] = 0x00;
+      outMsg.buf[7] = 0x00;
+    break;  
+
+    case 0x368:       //AFR O2
+      outMsg.id = DashMessageID;
+      outMsg.len = 8;
+      outMsg.buf[0] = highByte(currentStatus.O2*100);
+      outMsg.buf[1] = lowByte(currentStatus.O2*100);
+      outMsg.buf[2] = 0x00;
+      outMsg.buf[3] = 0x00;
+      outMsg.buf[4] = 0x00;
+      outMsg.buf[5] = 0x00;
+      outMsg.buf[6] = 0x00;
+      outMsg.buf[7] = 0x00;
+    break; 
+
+    case 0x362:       //Advance 
+     
+      outMsg.id = DashMessageID;
+      outMsg.len = 8;
+      outMsg.buf[0] = 0x00;
+      outMsg.buf[1] = 0x00;
+      outMsg.buf[2] = 0x00;
+      outMsg.buf[3] = 0x00;
+      outMsg.buf[4] = currentStatus.advance/25.6;
+      outMsg.buf[5] = currentStatus.advance*10;
+      outMsg.buf[6] = 0x00;
+      outMsg.buf[7] = 0x00;
+    break;  
+
+    case 0x36F:       //speed 
+      outMsg.id = DashMessageID;
+      outMsg.len = 8;
+      outMsg.buf[0] = currentStatus.vss/25.6;
+      outMsg.buf[1] = currentStatus.vss*10;
+      outMsg.buf[2] = 0x00;
+      outMsg.buf[3] = 0x00;
+      outMsg.buf[4] = 0x00;
+      outMsg.buf[5] = 0x00;
+      outMsg.buf[6] = 0x00;
+      outMsg.buf[7] = 0x00;
+    break;            
+                         
+        
+    case 0x361:       //fuel, Oil pressure
+      outMsg.id = DashMessageID;
+      outMsg.len = 8;
+      outMsg.buf[0] = currentStatus.fuelPressure/25.6;
+      outMsg.buf[1] = currentStatus.fuelPressure*10;
+      outMsg.buf[2] = currentStatus.oilPressure/25.6;
+      outMsg.buf[3] = currentStatus.oilPressure*10;
+      outMsg.buf[4] = 0x00;
+      outMsg.buf[5] = 0x00;
+      outMsg.buf[6] = 0x00;
+      outMsg.buf[7] = 0x00;
+    break;
     default:
     break;
   }
