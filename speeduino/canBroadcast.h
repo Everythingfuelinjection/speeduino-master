@@ -14,8 +14,18 @@
 #define CAN_VAG_RPM 0x280
 #define CAN_VAG_VSS 0x5A0
 
+// for Haltech output
+#define CAN_HAL_RPM 0x360
+#define CAN_HAL_TMP 0x3E0
+#define CAN_HAL_BAT 0x372
+#define CAN_HAL_AFR 0x368
+#define CAN_HAL_ADV 0x362
+#define CAN_HAL_VSS 0x36F
+#define CAN_HAL_PRS 0x361
+
 void sendBMWCluster();
 void sendVAGCluster();
+void sendHALCluster();
 void DashMessages(uint16_t DashMessageID);
 #endif
 #endif // CANBROADCAST_H
