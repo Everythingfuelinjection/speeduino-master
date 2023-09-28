@@ -9,8 +9,8 @@
   extern HardwareSerial &CANSerial;
 #elif defined(CORE_STM32)
   #define CANSerial_AVAILABLE
-  #ifndef HAVE_HWSERIAL2 //Hack to get the code to compile on BlackPills
-    #define Serial2 Serial1
+  #ifndef Serial2
+    #define Serial2 Serial3
   #endif
   #if defined(STM32GENERIC) // STM32GENERIC core
     extern SerialUART &CANSerial;
