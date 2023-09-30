@@ -527,7 +527,7 @@ void readBaro(void)
 void readO2(void)
 {
   //An O2 read is only performed if an O2 sensor type is selected. This is to prevent potentially dangerous use of the O2 readings prior to proper setup/calibration
-  if(configPage6.egoType > 0)
+  if(configPage6.egoType > 0 && configPage6.egoType < 3)
   {
     unsigned int tempReading;
     #if defined(ANALOG_ISR)
@@ -540,6 +540,9 @@ void readO2(void)
     currentStatus.O2ADC = ADC_FILTER(tempReading, configPage4.ADCFILTER_O2, currentStatus.O2ADC);
     //currentStatus.O2 = o2CalibrationTable[currentStatus.O2ADC];
     currentStatus.O2 = table2D_getValue(&o2CalibrationTable, currentStatus.O2ADC);
+  }
+ else if(configPage6.egoType == 3){
+    // Do the CANBUS read
   }
   else
   {
