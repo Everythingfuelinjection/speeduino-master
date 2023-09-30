@@ -367,6 +367,11 @@ void can_Command(void)
 {
  //int currentcanCommand = inMsg.id;
  #if defined (NATIVE_CAN_AVAILABLE)
+ if(configPage6.egoType == 3){
+ if(inMsg.id == 400){
+  currentStatus.O2 = inMsg.buf[3]*3.775;
+ }
+}
       // currentStatus.canin[12] = (inMsg.id);
  if ( (inMsg.id == uint16_t(configPage9.obd_address + 0x100))  || (inMsg.id == 0x7DF))      
   {
