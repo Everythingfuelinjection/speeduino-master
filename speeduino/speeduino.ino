@@ -1,4 +1,4 @@
-/*
+/*202309 Haltech and CANBUS
 Speeduino - Simple engine management for the Arduino Mega 2560 platform
 Copyright (C) Josh Stewart
 
